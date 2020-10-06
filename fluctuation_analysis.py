@@ -1,7 +1,7 @@
 #
 # Adaptation of spontaneous activity in the developing visual cortex
 # M. E. Wosniack et al.
-# eu
+#
 # Data analysis codes
 # Auxiliar functions file: extra_functions.py
 #
@@ -132,7 +132,7 @@ plt.ylabel('Abs. diff. mean recording activities')
 plt.xlabel('Recording difference')
 sns.despine()
 plt.tight_layout()
-#plt.savefig('figures/recordings_all_positive.pdf')
+plt.savefig('figures/recordings_diff_amplitudes.pdf')
 # %%
 #
 # Now lets do some stats on the distributions across diff recordings

@@ -333,3 +333,14 @@ print('Hebbian adaptive: mean T = ' + str(round(np.mean(adaptive_topo_selective)
 print('Hebbian not adaptive: mean S = ' + str(round(np.mean(not_adaptive_spars_selective),2)) + ' STD = ' + str(round(np.std(not_adaptive_spars_selective),2)) )
 print('BCM: mean S = ' + str(round(np.mean(BCM_spars_selective),2)) + ' STD = ' + str(round(np.std(BCM_spars_selective),2)) )
 print('Hebbian adaptive: mean S = ' + str(round(np.mean(adaptive_spars_selective),2)) + ' STD = ' + str(round(np.std(adaptive_spars_selective),2)) )
+
+#%%
+# Now we will check the significance of the values.. but with a KS test:
+from scipy.stats import ks_2samp
+# 1. are topographies of BCM and non-adaptive simulations different?
+ks_2samp(BCM_topo_selective.values, not_adaptive_topo_selective.values)
+# 2. are topographies of adaptive and non-adaptive esimulations different?
+ks_2samp(adaptive_topo_selective.values, not_adaptive_topo_selective.values)
+len(BCM_topo_selective)
+len(adaptive_topo_selective)
+len(not_adaptive_topo_selective)

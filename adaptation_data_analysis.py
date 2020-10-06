@@ -266,3 +266,60 @@ plt.ylabel('Correlation')
 #plt.savefig('corr_decay_bootstrap.pdf')
 
 #%%
+#
+# 4. Correlation for diff time constants -> colormap
+#
+sum_data_tau_tau = pd.DataFrame(columns = ['tau_len', 'tau_decay', 'r2', 'pval', 'c_min', 'c_max', 'total_points', 'total_animals'])
+time_decay_range = np.linspace(100, 2100, 10)
+time_window_range = np.linspace(75, 570, 10)
+
+for time_decay in time_decay_range:
+    for time_window in time_window_range:
+        stats = compute_corr_decay(data_lh, time_decay, time_window, threshold_to_include)
+        vec_summary = pd.Series(np.append([time_decay, time_window], stats), index = sum_data_tau_tau.columns)
+        sum_data_tau_tau = sum_data_tau_tau.append(vec_summary, ignore_index = True)
+#%%
+sum_data_tau_tau['r2'][0:15]
+sum_data_tau_tau['tau_decay'][0:15]
+sum_data_tau_tau['tau_len'][0:15]
+
+#%%
+ee = np.asarray(sum_data_tau_tau['r2']).reshape([10,10])
+fig, ax = plt.subplots()
+mid_val = 0
+corr_min = -0.1
+corr_max = 0.55
+im = plt.imshow(ee, cmap='bwr_r', clim=(-0.1, 0.55), interpolation='none', extent=[75, 570, 2100, 100], norm=MidpointNormalize(midpoint=mid_val,vmin=corr_min, vmax=corr_max), aspect=(570-75)/(2100-100))
+#im = plt.imshow(ee, cmap='viridis', clim=(-0.1, 0.55), interpolation='none', extent=[75, 570, 2100, 100], aspect=(570-75)/(2100-100))
+
+#ax.set_aspect(2)
+fig.colorbar(im)
+plt.gca().invert_yaxis()
+plt.ylabel('tau_len')
+plt.xlabel('tau_max')
+plt.savefig('correlation_two_time_cte_v2.pdf')
+
+#%%
+import matplotlib.colors as colors
+
+# set the colormap and centre the colorbar
+class MidpointNormalize(colors.Normalize):
+	"""
+	Normalise the colorbar so that diverging bars work there way either side from a prescribed midpoint value)
+
+	e.g. im=ax1.imshow(array, norm=MidpointNormalize(midpoint=0.,vmin=-100, vmax=100))
+	"""
+	def __init__(self, vmin=None, vmax=None, midpoint=None, clip=False):
+		self.midpoint = midpoint
+		colors.Normalize.__init__(self, vmin, vmax, clip)
+
+	def __call__(self, value, clip=None):
+		# I'm ignoring masked values and all kinds of edge cases to make a
+		# simple example...
+		x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
+		return np.ma.masked_array(np.interp(value, x, y), np.isnan(value))
+
+
+#%%
+ee
+sum_data_tau_tau['r2']
